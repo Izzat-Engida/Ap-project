@@ -1,7 +1,11 @@
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class Usermenu {
-    public void menu(){
+    public void menu() throws MalformedURLException, NotBoundException, RemoteException {
         Scanner scan=new Scanner(System.in);
         int choice;
         while (true){
@@ -22,7 +26,8 @@ public class Usermenu {
             scan.nextLine(); // consume newline left-over
             switch(choice){
                 case 1:
-                    // Call the method to check the items to bid on
+                    Item item=new Item();
+                    item.itemMenu();
                     break;
                 case 2:
                     // Call the method to list an item to be bid on
@@ -36,6 +41,19 @@ public class Usermenu {
                 case 5:
                     break;
                 case 6:
+                    System.out.println("Enter your Email: ");
+                    String email=scan.nextLine();
+                    System.out.println("Enter your password: ");
+                    String password=scan.nextLine();
+                    AuctionServer access=(AuctionServer) Naming.lookup("//localhost:8000/Auction");
+                    if(access.login(email,password)){
+                  access.removeAccount(email,password);
+                        System.out.println("sorry to see you leave");
+                  break;
+                    }
+                    else{
+                        System.out.println("sorry, you can't delete your account\n you have inputted wrong information");
+                    }
 
                     break;
                 case 7:
