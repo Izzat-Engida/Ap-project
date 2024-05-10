@@ -40,10 +40,13 @@ public class Menu {
 
 
                 boolean success=access.login(username,password);
-                if(success){
+                int userId = access.userId(username);
+                if(success && userId != -1){
+                    // We can make the login method of AuctionServerImp to return empty str or the user Id of the user if found
+                    // but here instead there is another method for retrieving the userId with specified userName
                     System.out.println("login in success");
                     Usermenu menu=new Usermenu();
-                    menu.menu();
+                    menu.menu(userId);
                 }
                 else{
                     System.out.println("login failed");

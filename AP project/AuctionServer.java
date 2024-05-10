@@ -11,4 +11,11 @@ public interface AuctionServer extends Remote {
     Product getProductDetails(int productId) throws RemoteException;
     void updateCurrentBid(int auctionId,double currentPrice) throws RemoteException;
     void placeBid(int auctionId,int userId,double bidAmount) throws RemoteException;
+
+    ArrayList<Product> getAllProducts(int userId) throws RemoteException;
+    ArrayList<Transaction> getTransactions_buyer(int userId) throws RemoteException;
+    ArrayList<Transaction> getTransactions_Seller(int userId) throws RemoteException;
+    boolean insertNewProduct(int userId, String name, String description, String catagory, String condition) throws RemoteException;
+    int userId(String email) throws RemoteException;
+    ArrayList<Bid> getBids(int userId) throws RemoteException;
 }
