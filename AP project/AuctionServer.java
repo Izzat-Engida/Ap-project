@@ -1,9 +1,11 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public interface AuctionServer extends Remote {
+
     boolean register(Register user) throws RemoteException;
     boolean login(String email,String password) throws  RemoteException;
     void removeAccount(String email,String password) throws  RemoteException;
@@ -18,4 +20,8 @@ public interface AuctionServer extends Remote {
     boolean insertNewProduct(int userId, String name, String description, String catagory, String condition) throws RemoteException;
     int userId(String email) throws RemoteException;
     ArrayList<Bid> getBids(int userId) throws RemoteException;
+
+    void removeAuction(Object auctionID) throws RemoteException;
+
+    int insertAuction(AuctionDetails auctionDetails) throws RemoteException;
 }

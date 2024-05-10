@@ -37,7 +37,8 @@ public class Usermenu {
                     break;
                 case 2:
 
-                    // Call the method to list an item to be bid on
+                    ListItem items= new ListItem();
+                    items.menu(userId);
                     break;
                 case 3:
                     // Call the method to check the items the user bid on
@@ -112,7 +113,6 @@ public class Usermenu {
                     String category = cin.nextLine();
                     System.out.print("Enter the Condition of the Product: ");
                     String cond = cin.nextLine();
-                    cin.nextLine();
                     boolean success = serverImp.insertNewProduct(userId, name, des,category, cond);
                     if(!success){
                         System.out.println("----- Sorry can't Save your Product in the System -----");
@@ -125,7 +125,7 @@ public class Usermenu {
                     System.out.println("userId: " + userId);
                     ArrayList<Product> listOfProds = serverImp.getAllProducts(userId);
                     if(listOfProds.size() < 1){
-                        System.out.println("The Product hasn't been logged for storage");
+                        System.out.println("No Product hasn't been logged for storage");
                     }
                     else{
                         System.out.println(String.format("%5s%10s%10s \t %-5s", "ProductId", "Name", "Category", "Description"));

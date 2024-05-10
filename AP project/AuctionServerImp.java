@@ -310,4 +310,32 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
         }
         return bidArrayList;
     }
+
+    @Override
+    public void removeAuction(Object auctionID) throws RemoteException {
+
+    }
+
+    @Override
+    public int insertAuction(AuctionDetails auctionDetails) throws RemoteException {
+String query="INSERT INTO AuctionDetails(ProductID,SellerID,StartingPrice,CurrentPrice,StartTime,EndTime) VALUES(?,?,?,?,?,?) ";
+int auctionId=-1;
+try{
+    PreparedStatement statement=connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+    statement.setInt(1,auctionDetails.getId());
+    statement.setInt(2,auctionDetails.getUserId());
+    statement.setDouble(3,auctionDetails.getStartPrice());
+    statement.setDouble(4,auctionDetails.getCurrentPrice());
+    statement.setTimestamp(5,auctionDetails.getStartTime());
+    statement.setTimestamp(6,auctionDetails.getEndTIme());
+    statement.executeUpdate();
+ResultSet rs=statement.getGeneratedKeys();
+if(rs.next()){
+    auctionId=rs.getInt(1);
+}
+}catch (SQLException e){
+e.printStackTrace();
+}
+return auctionId;
+    }
 }
