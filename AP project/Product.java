@@ -1,15 +1,27 @@
 public class Product {
-    private int id;
+    private int productId;
+    private int ownerId;
     private String name;
     private String description;
     private String category;
     private String condition;
+    public Product() {
+
+    }
+    public Product(int productId, int ownerId, String name, String description, String category, String condition) {
+        this.productId = productId;
+        this.ownerId = ownerId;
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.condition = condition;
+    }
     public int getId() {
-        return id;
+        return productId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int productId) {
+        this.productId = productId;
     }
 
     public String getName() {
@@ -44,7 +56,7 @@ public class Product {
         this.condition = condition;
     }
     public String toString() {
-        return "Product ID: " + id + "\n" +
+        return "Product ID: " + productId + "\n" +
                 "Name: " + name + "\n" +
                 "Description: " + description + "\n" +
                 "Category: " + category + "\n" +

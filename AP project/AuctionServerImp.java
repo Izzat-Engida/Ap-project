@@ -1,5 +1,5 @@
 
-import com.mysql.cj.xdevapi.UpdateStatement;
+//import com.mysql.cj.xdevapi.UpdateStatement;
 
 import java.rmi.RemoteException;
 
@@ -74,6 +74,34 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
         }
         catch (SQLException e){
             e.printStackTrace();
+        }
+    }
+    @Override
+    public ArrayList<Product> getAllProducts(int userId) throws RemoteException {
+        String query = "SELECT * FROM products WHERE OwnerID = ?";
+        ArrayList<Product> listOfProds = new ArrayList<>();
+        try {
+            PreparedStatement pStm = connection.prepareStatement(query);
+            pStm.setInt(1, userId);
+            ResultSet resultSet = pStm.executeQuery();
+            int ownerId, prodId;
+            String name, description, category, condition;
+
+            while(resultSet.next()){
+                ownerId = resultSet.getInt("OwnerID");
+                prodId = resultSet.getInt("ProductID" );
+                name = resultSet.getString("Name" );
+                description = resultSet.getString("Description" );
+                category = resultSet.getString("Category" );
+                condition = resultSet.getString("Conditionp" );
+                listOfProds.add(new Product(prodId, ownerId, name, description, category, condition));
+
+            }
+            return listOfProds;
+        }catch (SQLException e){
+            System.out.println("------------ Exception has occurred in getAllProduct with userId as a Parameter it ----------------");
+            e.printStackTrace();
+            return listOfProds;
         }
     }
 
