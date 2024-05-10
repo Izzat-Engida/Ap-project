@@ -11,7 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ListItem {
-    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 
     public void menu(int userId) throws MalformedURLException, NotBoundException, RemoteException, RemoteException {
         System.out.println("Welcome user here you can Auction the items you added before\nLets begin");
@@ -69,14 +69,14 @@ public class ListItem {
         executorService.schedule(() -> {
             try {
                 endAuction(auctionDetails);
-            } catch (RemoteException | MalformedURLException | NotBoundException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }, delay, TimeUnit.MILLISECONDS);
     }
 
     private void endAuction(AuctionDetails auctionDetails) throws RemoteException, MalformedURLException, NotBoundException {
-
+        System.out.println("closing the auction");
         AuctionServer access=(AuctionServer) Naming.lookup("//localhost:8000/Auction");
         Bid temp=access.getWinner(auctionDetails.getAuctionID());
         Transaction transaction=new Transaction(temp.getBidderId(),auctionDetails.getUserId(),auctionDetails.getId(), temp.getBidAmount(), temp.getBidTime());

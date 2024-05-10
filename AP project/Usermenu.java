@@ -33,7 +33,7 @@ public class Usermenu {
             switch(choice){
                 case 1:
                     Item item=new Item();
-                    item.itemMenu();
+                    item.itemMenu(userId);
                     break;
                 case 2:
 

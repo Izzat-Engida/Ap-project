@@ -105,7 +105,7 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
     public ArrayList<Product> getAllProducts() throws RemoteException {
         ArrayList<Product> prod=new ArrayList<>();
         try{
-            String query="Select * from products";
+            String query="Select * from products INNER JOIN AuctionDetails ON products.ProductId=AuctionDetails.ProductId";
             Statement s=connection.createStatement();
             ResultSet res = s.executeQuery(query);
             while(res.next()){
@@ -125,26 +125,26 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
     }
 
     @Override
-    public Product getProductDetails(int productId) throws RemoteException {
-        Product product = null;
+    public AuctionDetails getProductDetails(int productId) throws RemoteException {
+        AuctionDetails product = null;
         try {
-            String query = "SELECT * FROM Products p JOIN AuctionDetails a ON p.ProductID = a.ProductID WHERE p.ProductID = ?";
+            String query = "SELECT * FROM AuctionDetails  WHERE ProductId=?";
             PreparedStatement s = connection.prepareStatement(query);
             s.setInt(1, productId);
             ResultSet res = s.executeQuery();
 
             if (res.next()) {
-                product = new Product();
+                product = new AuctionDetails();
 
                 product.setAuctionId(res.getInt("AuctionID"));
-                product.setSellerId(res.getInt("SellerID"));
-                product.setStartingPrice(res.getDouble("StartingPrice"));
+                product.setSellerID(res.getInt("SellerID"));
+                product.setStartPrice(res.getDouble("StartingPrice"));
                 product.setCurrentPrice(res.getDouble("CurrentPrice"));
                 Timestamp startTime = res.getTimestamp("StartTime");
                 Timestamp endTime = res.getTimestamp("EndTime");
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                product.setStartTime(dateFormat.format(startTime));
-                product.setEndTime(dateFormat.format(endTime));
+                product.setStartTime(startTime.toLocalDateTime());
+                product.setEndTime(endTime.toLocalDateTime());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -158,6 +158,7 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
         PreparedStatement statement=connection.prepareStatement(query);
         statement.setDouble(1,currentPrice);
         statement.setInt(2,auctionId);
+        statement.executeUpdate();
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -167,7 +168,7 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
 
     @Override
     public void placeBid(int auctionId, int userId, double bidAmount) throws RemoteException {
-        try{String query="Insert Into BiddingActivity(AuctionId,BidderId,BidAmount,BidTime) values(?,?,?,?)";
+        try{String query="INSERT INTO BiddingActivity(AuctionId,BidderId,BidAmount,BidTime) Values(?,?,?,?)";
         PreparedStatement statement=connection.prepareStatement(query);
         statement.setInt(1,auctionId);
         statement.setInt(2,userId);

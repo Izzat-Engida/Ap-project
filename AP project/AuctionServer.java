@@ -10,7 +10,7 @@ public interface AuctionServer extends Remote {
     boolean login(String email,String password) throws  RemoteException;
     void removeAccount(String email,String password) throws  RemoteException;
     ArrayList<Product> getAllProducts() throws RemoteException;
-    Product getProductDetails(int productId) throws RemoteException;
+    AuctionDetails getProductDetails(int productId) throws RemoteException;
     void updateCurrentBid(int auctionId,double currentPrice) throws RemoteException;
     void placeBid(int auctionId,int userId,double bidAmount) throws RemoteException;
 

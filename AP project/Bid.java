@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.lang.foreign.SegmentAllocator;
 import java.sql.Timestamp;
 
 public class Bid implements Serializable {
