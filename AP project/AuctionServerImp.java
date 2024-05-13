@@ -4,28 +4,28 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class AuctionServerImp extends UnicastRemoteObject implements AuctionServer {
     private Connection connection;
 
     public AuctionServerImp() throws RemoteException {
-        super();
+        super(); String pass = "St_Gabriel_19";
         try {
             // Replace with your database connection details
-            String url = "jdbc:mysql://localhost:3306/auction_db";
+            String url = "jdbc:mysql://localhost:3310/auction_db";
             String username = "root";///add yours
-            String password = "123456";//add your
+            String password = pass;//add your
             connection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
     @Override
     public boolean register(Register user) throws RemoteException {
         try {
-            String query = "INSERT INTO Users (firstName, lastName, Email, Password, Address, birthDate) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO Users (firstName, lastName, Email, Password, Address, birthDate, RegistrationDate ) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, user.getFirstName());
@@ -35,6 +35,7 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
             java.util.Date birthDate=  user.getBirthDate();
             java.sql.Date sqlDate=new java.sql.Date(birthDate.getTime());
             statement.setDate(6,sqlDate);
+            statement.setTimestamp(7, Timestamp.valueOf(LocalDateTime.now()));
 
             statement.setString(5, user.getAddress());
             int rowsInserted = statement.executeUpdate();
@@ -61,17 +62,21 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
     }
 
     @Override
-    public void removeAccount(String email, String password) throws RemoteException {
+    public boolean removeAccount(int userId, String password) throws RemoteException {
         try{
-            String query="DELETE from Users Where email= ? and password= ? ";
+            String query="DELETE from Users Where UserID = ? and password= ? ";
             PreparedStatement statement=connection.prepareStatement(query);
-            statement.setString(1,email);
+            statement.setInt(1,userId);
             statement.setString(2,password);
-            statement.executeQuery();
+            int row = statement.executeUpdate();
+            return row > 0;
         }
         catch (SQLException e){
+            System.out.println("----------- Can't delete in removeAccount -----------");
             e.printStackTrace();
         }
+        return false;
+
     }
     @Override
     public ArrayList<Product> getAllProducts(int userId) throws RemoteException {
@@ -288,6 +293,7 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
         ArrayList<Bid> bidArrayList = new ArrayList<>();
         try {
             PreparedStatement pStm = connection.prepareStatement(query);
+            pStm.setInt(1, userId);
             ResultSet resultSet = pStm.executeQuery();
             while(resultSet.next()){
                 int bidId = resultSet.getInt("BidID") ;
@@ -303,7 +309,7 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
             }
         }
         catch (SQLException e){
-            System.out.println("Exception in getBids method after AuctionServerImp\n");
+            System.out.println("----------------Exception in getBids method after AuctionServerImp----------------\n");
             e.printStackTrace();
 
         }
@@ -312,51 +318,52 @@ public class AuctionServerImp extends UnicastRemoteObject implements AuctionServ
 
     @Override
     public void removeAuction(int auctionID) throws RemoteException {
-String query="DELETE from AuctionDetails WHERE AuctionID=?";
-try{
-    PreparedStatement statement=connection.prepareStatement(query);
-    statement.setInt(1,auctionID);
-    statement.executeUpdate();
-}
-catch(Exception e){
-    e.printStackTrace();
-}
+        String query="DELETE from AuctionDetails WHERE AuctionID=?";
+        try{
+            PreparedStatement statement=connection.prepareStatement(query);
+            statement.setInt(1,auctionID);
+            statement.executeUpdate();
+        }
+        catch(Exception e){
+            System.out.println("-------------Error: Auction element can't be Removed properly-------------");
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int insertAuction(AuctionDetails auctionDetails) throws RemoteException {
-String query="INSERT INTO AuctionDetails(ProductID,SellerID,StartingPrice,CurrentPrice,StartTime,EndTime) VALUES(?,?,?,?,?,?) ";
-int auctionId=-1;
-try{
-    PreparedStatement statement=connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
-    statement.setInt(1,auctionDetails.getId());
-    statement.setInt(2,auctionDetails.getUserId());
-    statement.setDouble(3,auctionDetails.getStartPrice());
-    statement.setDouble(4,auctionDetails.getCurrentPrice());
-    statement.setTimestamp(5,auctionDetails.getStartTime());
-    statement.setTimestamp(6,auctionDetails.getEndTIme());
-    statement.executeUpdate();
-ResultSet rs=statement.getGeneratedKeys();
-if(rs.next()){
-    auctionId=rs.getInt(1);
-}
-}catch (SQLException e){
-e.printStackTrace();
-}
-return auctionId;
+        String query="INSERT INTO AuctionDetails(ProductID,SellerID,StartingPrice,CurrentPrice,StartTime,EndTime) VALUES(?,?,?,?,?,?) ";
+        int auctionId=-1;
+        try{
+            PreparedStatement statement=connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1,auctionDetails.getId());
+            statement.setInt(2,auctionDetails.getUserId());
+            statement.setDouble(3,auctionDetails.getStartPrice());
+            statement.setDouble(4,auctionDetails.getCurrentPrice());
+            statement.setTimestamp(5,auctionDetails.getStartTime());
+            statement.setTimestamp(6,auctionDetails.getEndTIme());
+            statement.executeUpdate();
+            ResultSet rs=statement.getGeneratedKeys();
+            if(rs.next()){
+                auctionId=rs.getInt(1);
+            }
+        }catch (SQLException e){
+        e.printStackTrace();
+        }
+        return auctionId;
     }
  @Override
- public void updateProduct(int userId,int productID) throws RemoteException{
-        String query="UPDATE Products SET OwnerID=? Where ProductId=?";
-     try{
-         PreparedStatement statement=connection.prepareStatement(query);
-         statement.setInt(1,userId);
-         statement.setInt(2,productID);
-         statement.executeUpdate();
-     }catch (Exception e){
-         e.printStackTrace();
+     public void updateProduct(int userId,int productID) throws RemoteException{
+            String query="UPDATE Products SET OwnerID=? Where ProductId=?";
+         try{
+             PreparedStatement statement=connection.prepareStatement(query);
+             statement.setInt(1,userId);
+             statement.setInt(2,productID);
+             statement.executeUpdate();
+         }catch (Exception e){
+             e.printStackTrace();
+         }
      }
- }
 
     @Override
     public Bid getWinner(int auctionID) throws RemoteException {

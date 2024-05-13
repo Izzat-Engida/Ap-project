@@ -10,6 +10,7 @@ public class Usermenu {
         Scanner scan=new Scanner(System.in);
         int choice;
         while (true){
+            // deleting expaired auction if found
             System.out.println("1. Check the items to bid on");
             System.out.println("2. List an item to be bid on");
             System.out.println("3. Check the items you bid on");
@@ -83,27 +84,25 @@ public class Usermenu {
                     System.out.println();
                     System.out.println();
                     break;
+//                case 5:
+//                    break;
                 case 5:
-                    break;
-                case 6:
-                    System.out.println("Enter your Email: ");
-                    String email=scan.nextLine();
                     System.out.println("Enter your password: ");
                     String password=scan.nextLine();
                     AuctionServer access=(AuctionServer) Naming.lookup("//localhost:8000/Auction");
-                    if(access.login(email,password)){
-                        access.removeAccount(email,password);
+                    if(access.removeAccount(userId, password)){
+                        access.removeAccount(userId,password);
                         System.out.println("sorry to see you leave");
-                        break;
+                        return;
                     }
                     else{
-                        System.out.println("sorry, you can't delete your account\n you have inputted wrong information");
+                        System.out.println("sorry, you can't delete this account\n you have inputted wrong information");
                     }
 
                     break;
 
 
-                case 7:
+                case 6:
                     Scanner cin = new Scanner(System.in);
                     System.out.print("Enter Name of the Product: ");
                     String name = cin.nextLine();
@@ -121,7 +120,7 @@ public class Usermenu {
                         System.out.println("\nProduct saved in the System Product List Successfully\n");
                     }
                     break;
-                case 8:
+                case 7:
                     System.out.println("userId: " + userId);
                     ArrayList<Product> listOfProds = serverImp.getAllProducts(userId);
                     if(listOfProds.size() < 1){
@@ -135,7 +134,7 @@ public class Usermenu {
                         }
                     }
                     break;
-                case 9:
+                case 8:
                     System.out.println("Logging out...");
                     return; // exit the method
                 default:

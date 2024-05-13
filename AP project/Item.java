@@ -20,7 +20,11 @@ void itemMenu(int useriD) throws MalformedURLException, NotBoundException, Remot
     System.out.println("Select the product by id for more details: ");
     choice=scan.nextInt();
     scan.nextLine();
-    productDetails(choice,useriD);
+    try {
+        productDetails(choice, useriD);
+    }catch (Exception e){
+        System.out.println("\nThere is no Item Listed by This ID");
+    }
     }
     else{
         System.out.println("Sorry,no product in the listing");
@@ -51,11 +55,11 @@ void itemMenu(int useriD) throws MalformedURLException, NotBoundException, Remot
                     scan.nextLine();
                 }
                 temp=temp2;
-                access.placeBid(p.getAuctionID(),userid,temp);
-                access.updateCurrentBid(p.getAuctionID(),temp);
-                System.out.println("you have successfully bid on the item");
             }
 
+            access.placeBid(p.getAuctionID(),userid,temp);
+            access.updateCurrentBid(p.getAuctionID(),temp);
+            System.out.println("you have successfully bid $" + temp +" on the item");
         }
         else{
             System.out.println("Maybe next time");

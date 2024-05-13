@@ -79,13 +79,22 @@ public class ListItem {
     }
 
     private void endAuction(AuctionDetails auctionDetails) throws RemoteException, MalformedURLException, NotBoundException {
-        System.out.println("closing the auction");
+        System.out.println("\nclosing the auction");
         AuctionServer access=(AuctionServer) Naming.lookup("//localhost:8000/Auction");
-        Bid temp=access.getWinner(auctionDetails.getAuctionID());
-        Transaction transaction=new Transaction(temp.getBidderId(),auctionDetails.getUserId(),auctionDetails.getId(), temp.getBidAmount(), temp.getBidTime());
-        access.updateProduct(temp.getBidderId(),auctionDetails.getId());
+
+        int auctionId=auctionDetails.getAuctionID();
+        int userId=auctionDetails.getUserId();
+        int productId = auctionDetails.getId();
         access.removeAuction(auctionDetails.getAuctionID());
-        access.addTransactions(transaction);
+        try {
+            Bid temp = access.getWinner(auctionDetails.getAuctionID());
+            Transaction transaction = new Transaction(temp.getBidderId(), userId, productId, temp.getBidAmount(), temp.getBidTime());
+            access.updateProduct(temp.getBidderId(), productId);
+            access.addTransactions(transaction);
+        }
+        catch (NullPointerException e){
+            System.out.println("\nSorry no person hasn't been bidding on this product (ProductNo: " + productId + ")");
+        }
 
     }
 }
