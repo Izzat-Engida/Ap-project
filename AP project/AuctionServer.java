@@ -27,4 +27,5 @@ public interface AuctionServer extends Remote {
     void updateProduct(int userid,int productID) throws RemoteException;
     Bid getWinner(int auctionID)throws RemoteException;
     void addTransactions(Transaction transaction) throws RemoteException;
+    boolean checkTheOwner(int userId, int productId) throws RemoteException;
 }

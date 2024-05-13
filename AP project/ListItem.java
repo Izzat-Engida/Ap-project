@@ -30,9 +30,12 @@ public class ListItem {
             System.out.println("Select which product needs to added to auction by inputing the auction id: ");
             System.out.print("choice: ");
             Scanner scan=new Scanner(System.in);
-            int id=scan.nextInt();
+            int productId=scan.nextInt();
             scan.nextLine();
-
+            if (!access.checkTheOwner(userId, productId)){
+                System.out.println("Incorrect product ID");
+                return;
+            }
 
             AuctionDetails auctionDetails = new AuctionDetails();
             System.out.println("Enter the starting price of the product: ");
@@ -45,7 +48,7 @@ public class ListItem {
             scan.nextLine();
             LocalDateTime startTime=LocalDateTime.now();
             LocalDateTime endTime =startTime.plusMinutes(duration);
-            auctionDetails.setProductID(id);
+            auctionDetails.setProductID(productId);
             auctionDetails.setSellerID(userId);
             auctionDetails.setStartTime(startTime);
             auctionDetails.setEndTime(endTime);

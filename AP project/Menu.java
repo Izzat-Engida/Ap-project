@@ -29,21 +29,19 @@ public class Menu {
             choice=scan.nextInt();
             scan.nextLine();
             if(choice==3){
-                break;
+                return;
             }
             else if(choice==1){
-                System.out.println("Enter your username: ");
-                String username = scan.nextLine();
+                System.out.println("Enter your Email: ");
+                String email = scan.nextLine();
                 System.out.println("Enter your password: ");
                 String password = scan.nextLine();
                 AuctionServer access=(AuctionServer) Naming.lookup("//localhost:8000/Auction");
 
+                boolean success=access.login(email,password);
+                int userId = access.userId(email);
 
-                boolean success=access.login(username,password);
-                int userId = access.userId(username);
                 if(success && userId != -1){
-                    // We can make the login method of AuctionServerImp to return empty str or the user Id of the user if found
-                    // but here instead there is another method for retrieving the userId with specified userName
                     System.out.println("login in success");
                     Usermenu menu=new Usermenu();
                     menu.menu(userId);
@@ -102,7 +100,7 @@ class Register implements Serializable {
         this.email = email;
         this.address=address;
     }
-String getAddress(){
+    String getAddress(){
         return address;
 }
     String getFirstName(){

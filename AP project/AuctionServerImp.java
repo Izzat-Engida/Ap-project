@@ -1,3 +1,4 @@
+import javax.xml.transform.Result;
 import java.rmi.RemoteException;
 
 import java.rmi.server.UnicastRemoteObject;
@@ -402,6 +403,21 @@ return auctionId;
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean checkTheOwner(int userId, int productId) throws RemoteException {
+        String query = "SELECT * FROM Products WHERE ProductID = ? AND OwnerID = ?";
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, productId);
+            stm.setInt(2, userId);
+            ResultSet resultSet = stm.executeQuery();
+            return resultSet.next();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

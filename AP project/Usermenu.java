@@ -12,13 +12,13 @@ public class Usermenu {
         while (true){
             System.out.println("1. Check the items to bid on");
             System.out.println("2. List an item to be bid on");
-            System.out.println("3. check the items you bid on");
-            System.out.println("4. see your history");
-            System.out.println("5. manage your money");
-            System.out.println("6. delete your account ");
-            System.out.println("7. Save your Product Information in the system");
-            System.out.println("8. See your List of product saved in the system");
-            System.out.println("9. logout");
+            System.out.println("3. Check the items you bid on");
+            System.out.println("4. See your history");
+//            System.out.println("5. manage your money");
+            System.out.println("5. Delete your account ");
+            System.out.println("6. Save your Product Information in the system");
+            System.out.println("7. See your List of product saved in the system");
+            System.out.println("8. logout");
             System.out.print("choice: ");
             AuctionServerImp serverImp = new AuctionServerImp();
 
