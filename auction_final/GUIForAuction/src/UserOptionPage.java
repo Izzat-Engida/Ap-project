@@ -5,10 +5,6 @@ import javax.swing.*;
 
 
 public class UserOptionPage extends GeneralWindow{
-    // delete after the test
-    public static void main(String[] args) {
-        new UserOptionPage(2).setVisible(true);
-    }
     private ArrayList<JButton> optionBtn = new ArrayList<>();
     private JPanel homePanel;
     public UserOptionPage(int userId) {
